@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Department - BIT</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <a href="admin-dashboard.html" class="back-link">← Back to Dashboard</a>
+        <h2>Add Department</h2>
+        <form id="department-form" onsubmit="addDepartment(); return false;">
+            <div class="form-group">
+                <label for="department-name">Department Name:</label>
+                <input type="text" id="department-name" name="department-name" placeholder="e.g. Mechanical Engineering" required>
+            </div>
+            <button type="submit" class="btn-primary">+ Add Department</button>
+        </form>
+    </div>
+
+    <script>
+        function addDepartment() {
+            const deptName = document.getElementById('department-name').value.trim();
+            if (deptName) {
+                let departments = JSON.parse(localStorage.getItem('departments')) || [];
+                if (!departments.includes(deptName)) {
+                    departments.push(deptName);
+                    localStorage.setItem('departments', JSON.stringify(departments));
+                }
+                window.location.href = 'admin-dashboard.html';
+            }
+        }
+    </script>
+</body>
+</html>

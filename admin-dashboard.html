@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - BIT Timetable Management</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container full-size">
+        <!-- Top Navigation -->
+        <div class="top-nav">
+            <div class="top-nav-left">
+                <div class="logo-badge">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h1>Admin Dashboard</h1>
+                    <span class="app-subtitle">Class Timetable & Resource Allocation System</span>
+                </div>
+            </div>
+
+            <div class="top-nav-actions">
+                <button type="button" class="btn-secondary" onclick="resetToDefaultSeedData()" title="Reload predefined sample data">🔄 Reset Sample Data</button>
+                <button type="button" class="btn-secondary" onclick="window.location.href='timetable_display.html'">🗓️ View Latest Timetable</button>
+                <button type="button" class="btn-secondary" onclick="window.location.href='login.html'">Logout</button>
+            </div>
+        </div>
+
+        <!-- Metric Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#e0e7ff; color:var(--primary);">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-depts">0</div>
+                    <div class="stat-label">Departments</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#ecfdf5; color:#059669;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-subjects">0</div>
+                    <div class="stat-label">Subjects Configured</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#fef3c7; color:#d97706;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-faculty">0</div>
+                    <div class="stat-label">Faculty Members</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#f3e8ff; color:#9333ea;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-venues">0</div>
+                    <div class="stat-label">Lecture Halls & Labs</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Navigation Menu -->
+        <div class="menu">
+            <button id="tab-btn-department" type="button" class="active" onclick="showSection('department')">🏛️ Departments</button>
+            <button id="tab-btn-semester" type="button" onclick="showSection('semester')">📚 Semesters</button>
+            <button id="tab-btn-subject" type="button" onclick="showSection('subject')">📖 Subjects</button>
+            <button id="tab-btn-faculty" type="button" onclick="showSection('faculty')">👨‍🏫 Faculty</button>
+            <button id="tab-btn-venue" type="button" onclick="showSection('venue')">🏫 Venues / Rooms</button>
+            <button id="tab-btn-timetable" type="button" onclick="showSection('timetable')" style="background:var(--primary-light); color:var(--primary); font-weight:700;">⚡ Generate Timetable</button>
+        </div>
+
+        <!-- Department Section -->
+        <div id="department-section" class="section active">
+            <div class="section-card">
+                <h2>Add Department</h2>
+                <form id="department-form" onsubmit="event.preventDefault(); addDepartment();" style="display: flex; flex-direction: row; gap: 12px; align-items: flex-end;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="department-name">Department Name:</label>
+                        <input type="text" id="department-name" name="department-name" placeholder="e.g. Biomedical Engineering" required>
+                    </div>
+                    <button type="submit" class="btn-primary" style="height: 44px; white-space: nowrap;">+ Add Department</button>
+                </form>
+            </div>
+
+            <table id="department-table" class="data-table">
+                <thead>
+                    <tr>
+                        <th>Department Name</th>
+                        <th style="width: 160px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Semester Section -->
+        <div id="semester-section" class="section">
+            <div class="section-card">
+                <h2>Add Semester</h2>
+                <form id="semester-form" onsubmit="event.preventDefault(); addSemester();" style="display: grid; grid-template-columns: 2fr 1fr auto; gap: 12px; align-items: flex-end;">
+                    <div class="form-group">
+                        <label for="department-select">Select Department:</label>
+                        <select id="department-select" name="department-select" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="semester-number">Semester Number:</label>
+                        <input type="number" id="semester-number" name="semester-number" min="1" max="10" placeholder="e.g. 4" required>
+                    </div>
+                    <button type="submit" class="btn-primary" style="height: 44px;">+ Add Semester</button>
+                </form>
+            </div>
+
+            <table id="semester-table" class="data-table">
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Semester</th>
+                        <th style="width: 160px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Subject Section -->
+        <div id="subject-section" class="section">
+            <div class="section-card">
+                <h2>Add Subject</h2>
+                <form id="subject-form" onsubmit="event.preventDefault(); addSubject();" style="display: grid; grid-template-columns: 1.5fr 1fr 2fr auto; gap: 12px; align-items: flex-end;">
+                    <div class="form-group">
+                        <label for="subject-department-select">Department:</label>
+                        <select id="subject-department-select" name="subject-department-select" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject-semester-select">Semester:</label>
+                        <select id="subject-semester-select" name="subject-semester-select" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject-name">Subject Name:</label>
+                        <input type="text" id="subject-name" name="subject-name" placeholder="e.g. Cloud Computing" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="height: 44px;">+ Add Subject</button>
+                </form>
+            </div>
+
+            <table id="subject-table" class="data-table">
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Semester</th>
+                        <th>Subject Name</th>
+                        <th style="width: 160px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Faculty Section -->
+        <div id="faculty-section" class="section">
+            <div class="section-card">
+                <h2>Assign Faculty to Subject</h2>
+                <form id="faculty-form" onsubmit="event.preventDefault(); addFaculty();" style="display: grid; grid-template-columns: 1.5fr 1fr 2fr 2fr auto; gap: 12px; align-items: flex-end;">
+                    <div class="form-group">
+                        <label for="faculty-department-select">Department:</label>
+                        <select id="faculty-department-select" name="faculty-department-select" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="faculty-semester-select">Semester:</label>
+                        <select id="faculty-semester-select" name="faculty-semester-select" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="faculty-subject-select">Subject:</label>
+                        <select id="faculty-subject-select" name="faculty-subject-select" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="faculty-name">Faculty Name:</label>
+                        <input type="text" id="faculty-name" name="faculty-name" placeholder="e.g. Dr. A. Kumar" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="height: 44px;">+ Assign</button>
+                </form>
+            </div>
+
+            <table id="faculty-table" class="data-table">
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Semester</th>
+                        <th>Subject</th>
+                        <th>Faculty Name</th>
+                        <th style="width: 160px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Venue Section -->
+        <div id="venue-section" class="section">
+            <div class="section-card">
+                <h2>Add Classroom / Laboratory</h2>
+                <form id="venue-form" onsubmit="event.preventDefault(); addVenue();" style="display: grid; grid-template-columns: 2fr 1fr 2fr auto; gap: 12px; align-items: flex-end;">
+                    <div class="form-group">
+                        <label for="venue-name">Venue / Room Name:</label>
+                        <input type="text" id="venue-name" name="venue-name" placeholder="e.g. Smart Room 302" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="venue-capacity">Seating Capacity:</label>
+                        <input type="number" id="venue-capacity" name="venue-capacity" min="1" placeholder="e.g. 60" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="venue-department-select">Department:</label>
+                        <select id="venue-department-select" name="venue-department-select" required></select>
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="height: 44px;">+ Add Venue</button>
+                </form>
+            </div>
+
+            <table id="venue-table" class="data-table">
+                <thead>
+                    <tr>
+                        <th>Venue Name</th>
+                        <th>Capacity</th>
+                        <th>Department</th>
+                        <th style="width: 120px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Timetable Generation Section -->
+        <div id="timetable-section" class="section">
+            <div class="section-card">
+                <h2>Generate Optimized Timetable</h2>
+                <p style="margin-bottom: 20px;">Select target department and semester. The automated scheduler will generate balanced weekly periods (Monday–Friday), ensuring break intervals, faculty allocation, and classroom assignments.</p>
+
+                <form id="timetable-form" onsubmit="event.preventDefault(); generateTimetable();" style="display: grid; grid-template-columns: 2fr 1fr auto; gap: 14px; align-items: flex-end;">
+                    <div class="form-group">
+                        <label for="timetable-department-select">Select Department:</label>
+                        <select id="timetable-department-select" name="timetable-department-select" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timetable-semester-select">Select Semester:</label>
+                        <select id="timetable-semester-select" name="timetable-semester-select" required></select>
+                    </div>
+
+                    <button type="submit" class="btn-success" style="height: 44px; padding: 0 24px;">⚡ Generate Timetable</button>
+                </form>
+            </div>
+
+            <div id="timetable">
+                <!-- Generated timetable preview renders here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

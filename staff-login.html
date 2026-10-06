@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty & Staff Portal - BIT Timetable</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        @media print {
+            .top-nav, form, .no-print, .back-link {
+                display: none !important;
+            }
+            .dashboard-container {
+                box-shadow: none;
+                border: none;
+                width: 100%;
+                max-width: 100%;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="top-nav">
+            <div class="top-nav-left">
+                <div class="logo-badge" style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2>Faculty & Staff Schedule Portal</h2>
+                    <span class="app-subtitle">Departmental Lecture Schedules</span>
+                </div>
+            </div>
+            <div class="top-nav-actions">
+                <button class="btn-secondary" onclick="window.location.href='login.html'">Back to Home</button>
+            </div>
+        </div>
+
+        <div class="section-card no-print">
+            <form onsubmit="return viewTimetable(event)" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 14px; align-items: end;">
+                <div class="form-group">
+                    <label for="faculty-name">Faculty Name:</label>
+                    <input type="text" id="faculty-name" name="faculty-name" placeholder="e.g. Dr. K. Sharma" value="Dr. K. Sharma" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="faculty-id">Faculty ID:</label>
+                    <input type="text" id="faculty-id" name="faculty-id" placeholder="e.g. FAC-001" value="FAC-001" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="department">Department:</label>
+                    <select id="department" name="department" required>
+                        <option value="">-- Select Department --</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <button type="submit" class="btn-primary" style="height: 44px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">View Schedule</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="timetable-wrapper" style="margin-top: 24px;">
+            <div id="timetable-header-info" style="display:none; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 id="schedule-title">Department Timetable</h3>
+                <button onclick="window.print()" class="btn-secondary" style="padding: 6px 14px; font-size: 13px;">🖨️ Print Timetable</button>
+            </div>
+            <div id="timetable">
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary); background: #f8fafc; border-radius: 12px; border: 1.5px dashed var(--border);">
+                    <div style="font-size: 36px; margin-bottom: 8px;">🎓</div>
+                    <h3 style="font-size: 17px; margin-bottom: 4px;">Faculty Schedule Viewer</h3>
+                    <p style="margin: 0;">Fill in your faculty details and department above to retrieve the latest scheduled sessions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const departments = JSON.parse(localStorage.getItem('departments')) || [
+                "Computer Science Engineering",
+                "Electronics and Communication Engineering",
+                "Information Technology",
+                "Mechanical Engineering"
+            ];
+            const deptSelect = document.getElementById('department');
+            deptSelect.innerHTML = '<option value="">-- Select Department --</option>';
+            departments.forEach(dept => {
+                const opt = document.createElement('option');
+                opt.value = dept;
+                opt.textContent = dept;
+                deptSelect.appendChild(opt);
+            });
+
+            if (departments.length > 0) {
+                deptSelect.value = departments[0];
+                loadTimetable(departments[0]);
+            }
+        });
+
+        function loadTimetable(department) {
+            const timetableDept = localStorage.getItem(`timetable_${department}`);
+            const timetableGeneral = localStorage.getItem('timetable');
+            const target = timetableDept || timetableGeneral;
+
+            const titleElem = document.getElementById('schedule-title');
+            const headerInfo = document.getElementById('timetable-header-info');
+
+            if (target) {
+                headerInfo.style.display = 'flex';
+                titleElem.textContent = `${department} — Faculty Lecture Schedule`;
+                document.getElementById('timetable').innerHTML = target;
+            } else {
+                headerInfo.style.display = 'none';
+                document.getElementById('timetable').innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-secondary); background: #f8fafc; border-radius: 12px; border: 1.5px dashed var(--border);">
+                        <div style="font-size: 36px; margin-bottom: 8px;">📋</div>
+                        <h3 style="font-size: 17px; margin-bottom: 4px;">No Schedule Available Yet</h3>
+                        <p style="margin: 0;">No active timetable is published for <strong>${department}</strong>.</p>
+                        <p style="margin-top: 10px;"><a href="admin-login.html" style="color: var(--primary); font-weight: 600;">Log in as Admin</a> to generate the schedule.</p>
+                    </div>`;
+            }
+        }
+
+        function viewTimetable(event) {
+            event.preventDefault();
+            const department = document.getElementById('department').value;
+            loadTimetable(department);
+        }
+    </script>
+</body>
+</html>

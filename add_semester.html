@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Semester - BIT</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <a href="admin-dashboard.html" class="back-link">← Back to Dashboard</a>
+        <h2>Add Semester</h2>
+        <form id="semester-form" onsubmit="addSemester(); return false;">
+            <div class="form-group">
+                <label for="department-select">Select Department:</label>
+                <select id="department-select" name="department-select" required></select>
+            </div>
+            
+            <div class="form-group">
+                <label for="semester-number">Semester Number:</label>
+                <input type="number" id="semester-number" name="semester-number" min="1" max="10" placeholder="e.g. 5" required>
+            </div>
+
+            <button type="submit" class="btn-primary">+ Add Semester</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const deptSelect = document.getElementById('department-select');
+            const departments = JSON.parse(localStorage.getItem('departments')) || [
+                "Computer Science Engineering",
+                "Electronics and Communication Engineering",
+                "Information Technology"
+            ];
+            departments.forEach(department => {
+                let option = document.createElement('option');
+                option.value = department;
+                option.text = department;
+                deptSelect.appendChild(option);
+            });
+        });
+
+        function addSemester() {
+            const department = document.getElementById('department-select').value;
+            const semester = document.getElementById('semester-number').value.trim();
+            if (department && semester) {
+                let semesters = JSON.parse(localStorage.getItem('semesters')) || [];
+                if (!semesters.some(s => s.department === department && s.semester === semester)) {
+                    semesters.push({ department, semester });
+                    localStorage.setItem('semesters', JSON.stringify(semesters));
+                }
+                window.location.href = 'admin-dashboard.html';
+            }
+        }
+    </script>
+</body>
+</html>

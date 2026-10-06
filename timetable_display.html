@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Timetable - BIT</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .page-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: var(--radius-lg);
+            padding: 36px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+        }
+
+        @media print {
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+            }
+            .page-container {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                max-width: 100% !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .timetable-table {
+                box-shadow: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="top-nav">
+            <div class="top-nav-left">
+                <div class="logo-badge">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h1>Official Class Schedule</h1>
+                    <span class="app-subtitle" id="subtitle-info">Generated Schedule • Bannari Amman Institute of Technology</span>
+                </div>
+            </div>
+            <div class="top-nav-actions no-print">
+                <button onclick="window.print()" class="btn-primary">🖨️ Print / Save PDF</button>
+                <button onclick="window.location.href='admin-dashboard.html'" class="btn-secondary">← Back to Dashboard</button>
+            </div>
+        </div>
+
+        <div id="timetable-container" style="overflow-x: auto;"></div>
+
+        <div class="no-print" style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 20px;">
+            <div style="font-size: 13px; color: var(--text-secondary);">
+                💡 Legend: Regular lecture cells display <strong>Course Name</strong>, <em>Faculty Member</em>, and <em>Assigned Venue/Room</em>.
+            </div>
+            <div>
+                <a href="login.html" class="back-link" style="margin: 0;">Portal Home →</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function displayTimetable() {
+            const timetableHTML = localStorage.getItem('timetable');
+            const target = document.getElementById('timetable-container');
+            if (timetableHTML) {
+                target.innerHTML = timetableHTML;
+            } else {
+                target.innerHTML = `
+                    <div style="text-align:center; padding: 48px 20px; color: var(--text-secondary);">
+                        <div style="font-size: 40px; margin-bottom: 12px;">🗓️</div>
+                        <h3>No Generated Timetable Found</h3>
+                        <p>Please return to the Admin Dashboard and click "Generate Timetable".</p>
+                        <button onclick="window.location.href='admin-dashboard.html'" class="btn-primary" style="margin-top: 16px;">Go to Admin Dashboard</button>
+                    </div>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', displayTimetable);
+    </script>
+</body>
+</html>

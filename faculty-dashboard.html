@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <h2>Welcome to BIT TB Page</h2>
+        <p>Welcome, <span id="faculty-name-display"></span>!</p>
+    </div>
+
+    <script>
+        // Check if the faculty member is logged in
+        const facultyName = localStorage.getItem('loggedInFaculty');
+        if (facultyName) {
+            document.getElementById('faculty-name-display').textContent = facultyName;
+        } else {
+            // If no faculty is logged in, redirect to the login page
+            window.location.href = 'staff-login.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIT Timetable Management Portal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <div class="logo-badge">
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                    <path d="M8 14h.01"></path>
+                    <path d="M12 14h.01"></path>
+                    <path d="M16 14h.01"></path>
+                    <path d="M8 18h.01"></path>
+                    <path d="M12 18h.01"></path>
+                    <path d="M16 18h.01"></path>
+                </svg>
+            </div>
+            <h1>BIT TIMETABLE PORTAL</h1>
+            <span class="app-subtitle">Automated Scheduling System</span>
+        </div>
+
+        <p style="text-align: center; margin-bottom: 24px;">Select your role to access your dashboard and schedules</p>
+
+        <div class="login-options">
+            <button class="role-card-btn" onclick="window.location.href='admin-login.html'">
+                <div class="role-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2a5 5 0 0 0-5 5v2H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5z"></path>
+                        <circle cx="12" cy="14" r="2"></circle>
+                    </svg>
+                </div>
+                <div class="role-info">
+                    <span class="role-title">Administrator</span>
+                    <span class="role-desc">Manage departments, courses & generate timetables</span>
+                </div>
+                <span class="arrow-icon">➔</span>
+            </button>
+
+            <button class="role-card-btn" onclick="window.location.href='staff-login.html'">
+                <div class="role-icon" style="background:#fef3c7; color:#d97706;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <div class="role-info">
+                    <span class="role-title">Faculty / Staff</span>
+                    <span class="role-desc">View department schedules & assigned lectures</span>
+                </div>
+                <span class="arrow-icon">➔</span>
+            </button>
+
+            <button class="role-card-btn" onclick="window.location.href='student-login.html'">
+                <div class="role-icon" style="background:#ecfdf5; color:#059669;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                </div>
+                <div class="role-info">
+                    <span class="role-title">Student</span>
+                    <span class="role-desc">Check semester class schedules and venues</span>
+                </div>
+                <span class="arrow-icon">➔</span>
+            </button>
+        </div>
+
+        <div class="demo-box" style="margin-top: 28px;">
+            <div style="font-weight:700; margin-bottom: 6px;">💡 Quick Access Demo Credentials:</div>
+            <div>• <strong>Admin:</strong> ID <code>admin</code> / Password <code>password</code></div>
+            <div>• <strong>Student:</strong> Any ID / Password <code>student123</code></div>
+            <div>• <strong>Staff:</strong> Direct access with Faculty Name & Department</div>
+        </div>
+    </div>
+</body>
+</html>

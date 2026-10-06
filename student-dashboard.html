@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - BIT Timetable</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        @media print {
+            .top-nav, form, .no-print {
+                display: none !important;
+            }
+            .dashboard-container {
+                box-shadow: none;
+                border: none;
+                width: 100%;
+                max-width: 100%;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="top-nav">
+            <div class="top-nav-left">
+                <div class="logo-badge" style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2>Student Dashboard</h2>
+                    <span class="app-subtitle">Welcome, <strong id="student-id-display">Student</strong></span>
+                </div>
+            </div>
+            <div class="top-nav-actions">
+                <button class="btn-secondary" onclick="window.location.href='login.html'">Logout</button>
+            </div>
+        </div>
+
+        <div class="section-card no-print">
+            <p style="margin-bottom: 16px;">Select your Department and Semester to view your class schedule:</p>
+            <form id="student-filter-form" onsubmit="return viewTimetable(event)" style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 14px; align-items: end;">
+                <div class="form-group">
+                    <label for="department">Department:</label>
+                    <select id="department" name="department" required>
+                        <option value="">-- Choose Department --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="semester">Semester:</label>
+                    <select id="semester" name="semester" required>
+                        <option value="">-- Choose Semester --</option>
+                    </select>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn-primary" style="height: 44px;">View Timetable</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="timetable-wrapper" style="margin-top: 24px;">
+            <div id="timetable-header-info" style="display:none; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 id="schedule-title">Class Schedule</h3>
+                <button onclick="window.print()" class="btn-secondary" style="padding: 6px 14px; font-size: 13px;">🖨️ Print Timetable</button>
+            </div>
+            <div id="timetable">
+                <div style="text-align: center; padding: 40px; color: var(--text-secondary); background: #f8fafc; border-radius: 12px; border: 1.5px dashed var(--border);">
+                    <div style="font-size: 36px; margin-bottom: 8px;">📅</div>
+                    <h3 style="font-size: 17px; margin-bottom: 4px;">No Timetable Loaded</h3>
+                    <p style="margin: 0;">Please select your department and semester above, then click <strong>"View Timetable"</strong>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const studentId = localStorage.getItem('loggedInStudent') || 'Student';
+            document.getElementById('student-id-display').textContent = studentId;
+
+            // Load departments and semesters dynamically
+            const departments = JSON.parse(localStorage.getItem('departments')) || [
+                "Computer Science Engineering",
+                "Electronics and Communication Engineering",
+                "Information Technology",
+                "Mechanical Engineering"
+            ];
+            const deptSelect = document.getElementById('department');
+            deptSelect.innerHTML = '<option value="">-- Choose Department --</option>';
+            departments.forEach(dept => {
+                const opt = document.createElement('option');
+                opt.value = dept;
+                opt.textContent = dept;
+                deptSelect.appendChild(opt);
+            });
+
+            const semSelect = document.getElementById('semester');
+            semSelect.innerHTML = '<option value="">-- Choose Semester --</option>';
+            for (let i = 1; i <= 8; i++) {
+                const opt = document.createElement('option');
+                opt.value = i.toString();
+                opt.textContent = 'Semester ' + i;
+                semSelect.appendChild(opt);
+            }
+
+            // Auto-select first department and semester
+            if (departments.length > 0) {
+                deptSelect.value = departments[0];
+                semSelect.value = "1";
+                fetchAndRender(departments[0], "1");
+            }
+        });
+
+        function fetchAndRender(department, semester) {
+            const timetableSpecific = localStorage.getItem(`timetable_${department}_${semester}`);
+            const timetableDept = localStorage.getItem(`timetable_${department}`);
+            const timetableGeneral = localStorage.getItem('timetable');
+            const target = timetableSpecific || timetableDept || timetableGeneral;
+
+            const titleElem = document.getElementById('schedule-title');
+            const headerInfo = document.getElementById('timetable-header-info');
+
+            if (target) {
+                headerInfo.style.display = 'flex';
+                titleElem.textContent = `${department} — Semester ${semester} Schedule`;
+                document.getElementById('timetable').innerHTML = target;
+            } else {
+                headerInfo.style.display = 'none';
+                document.getElementById('timetable').innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-secondary); background: #f8fafc; border-radius: 12px; border: 1.5px dashed var(--border);">
+                        <div style="font-size: 36px; margin-bottom: 8px;">⏳</div>
+                        <h3 style="font-size: 17px; margin-bottom: 4px;">Timetable Pending Generation</h3>
+                        <p style="margin: 0;">The administrator has not yet generated a timetable for <strong>${department} (Sem ${semester})</strong>.</p>
+                        <p style="margin-top: 10px;"><a href="admin-login.html" style="color: var(--primary); font-weight: 600;">Log in as Admin</a> to generate it now.</p>
+                    </div>`;
+            }
+        }
+
+        function viewTimetable(event) {
+            event.preventDefault();
+            const department = document.getElementById('department').value;
+            const semester = document.getElementById('semester').value;
+            fetchAndRender(department, semester);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <h2>WELCOME TO BIT TB PAGE</h2>
+        <p>Enter your details to view the timetable:</p>
+        <form onsubmit="return viewTimetable(event)">
+            <label for="faculty-name">Faculty Name:</label>
+            <input type="text" id="faculty-name" name="faculty-name" required>
+            
+            <label for="faculty-id">Faculty ID:</label>
+            <input type="text" id="faculty-id" name="faculty-id" required>
+            
+            <label for="department">Department:</label>
+            <select id="department" name="department" required>
+                <option value="">Select Department</option>
+                <option value="ECE">Electronics and Communication Engineering</option>
+                <option value="CSE">Computer Science Engineering</option>
+                <!-- Add more departments as needed -->
+            </select>
+            
+            <button type="submit">View Timetable</button>
+        </form>
+        <div id="timetable">
+            <!-- Timetable will appear here -->
+        </div>
+    </div>
+
+    <script>
+        function viewTimetable(event) {
+            event.preventDefault();
+            const department = document.getElementById('department').value;
+            const timetable = {
+                "ECE": "Timetable for ECE: Monday - Math, Tuesday - Physics, ...",
+                "CSE": "Timetable for CSE: Monday - Programming, Tuesday - Data Structures, ..."
+            };
+            document.getElementById('timetable').innerText = timetable[department] || "Timetable not available";
+        }
+    </script>
+</body>
+</html>
